@@ -6,12 +6,6 @@ add-apt-repository -y ppa:deadsnakes/ppa
 apt-get install -y python3.7, python3.7-venv, python3.7-dev
 apt-get install -y build-essential, libmysqlclient-dev
 
-# Set Enviroment Variables
-DBuser=admin
-DBpassword=deployment5
-export DBuser
-export DBpassword
-
 # Create Virtual Env and Run Application
 python3.7 -m venv test
 source test/bin/activate
