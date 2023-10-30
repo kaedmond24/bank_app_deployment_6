@@ -14,8 +14,7 @@ pipeline {
     stage ('test') {
       steps {
         sh '''#!/bin/bash
-        source test/bin/activate
-        sudo apt install python3-dev default-libmysqlclient-dev build-essential 
+        source test/bin/activate 
         pip install mysql-connector-python
         pip install mysqlclient
         pip install pytest
