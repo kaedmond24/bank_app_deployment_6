@@ -46,7 +46,8 @@ resource "aws_route_table" "public_rt_d6_east" {
 }
 
 # ###### West VPC ###### 
-resource "aws.west_vpc" "vpc_d6_west" {
+resource "aws_vpc" "vpc_d6_west" {
+  provider   = aws.west
   cidr_block = "10.0.0.0/16"
 
   tags = {
@@ -55,12 +56,13 @@ resource "aws.west_vpc" "vpc_d6_west" {
   }
 }
 
-resource "aws.west_route_table" "public_rt_d6_west" {
-  vpc_id = aws.west_vpc.vpc_d6_west.id
+resource "aws_route_table" "public_rt_d6_west" {
+  provider = aws.west
+  vpc_id   = aws_vpc.vpc_d6_west.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws.west_internet_gateway.igw_d6_west.id
+    gateway_id = aws_internet_gateway.igw_d6_west.id
   }
 
   tags = {
@@ -121,8 +123,9 @@ resource "aws_route_table_association" "public_east_b" {
 }
 
 # ###### West VPC Subnets ###### 
-resource "aws.west_subnet" "public_subnet_west_a" {
-  vpc_id                  = aws.west_vpc.id
+resource "aws_subnet" "public_subnet_west_a" {
+  provider                = aws.west
+  vpc_id                  = aws_vpc.vpc_d6_west
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "${var.region_west}a"
   map_public_ip_on_launch = true
@@ -134,8 +137,9 @@ resource "aws.west_subnet" "public_subnet_west_a" {
   }
 }
 
-resource "aws.west_subnet" "public_subnet_west_b" {
-  vpc_id                  = aws.west_vpc.vpc_d6_west.id
+resource "aws_subnet" "public_subnet_west_b" {
+  provider                = aws.west
+  vpc_id                  = aws_vpc.vpc_d6_west.id
   cidr_block              = "10.0.3.0/24"
   availability_zone       = "${var.region_west}b"
   map_public_ip_on_launch = true
@@ -147,8 +151,9 @@ resource "aws.west_subnet" "public_subnet_west_b" {
   }
 }
 
-resource "aws.west_internet_gateway" "igw_d6_west" {
-  vpc_id = aws.west_vpc.vpc_d6_west.id
+resource "aws_internet_gateway" "igw_d6_west" {
+  provider = aws.west
+  vpc_id   = aws_vpc.vpc_d6_west.id
 
   tags = {
     Name : "igw_d6_west"
@@ -156,14 +161,16 @@ resource "aws.west_internet_gateway" "igw_d6_west" {
   }
 }
 
-resource "aws.west_route_table_association" "public_west_a" {
-  subnet_id      = aws.west_subnet.public_subnet_west_a.id
-  route_table_id = aws.west_route_table.public_rt_d6_west.id
+resource "aws_route_table_association" "public_west_a" {
+  provider       = aws.west
+  subnet_id      = aws_subnet.public_subnet_west_a.id
+  route_table_id = aws_route_table.public_rt_d6_west.id
 }
 
-resource "aws.west_route_table_association" "public_west_b" {
-  subnet_id      = aws.west_subnet.public_subnet_west_b.id
-  route_table_id = aws.west_route_table.public_rt_d6_west.id
+resource "aws_route_table_association" "public_west_b" {
+  provider       = aws.west
+  subnet_id      = aws_subnet.public_subnet_west_b.id
+  route_table_id = aws_route_table.public_rt_d6_west.id
 }
 
 
@@ -208,8 +215,9 @@ resource "aws_security_group" "app_access_d6_east_sg" {
 }
 
 # ###### West Security Groups ######
-resource "aws.west_security_group" "app_access_d6_west_sg" {
-  vpc_id      = aws.west_vpc.vpc_d6_west.id
+resource "aws_security_group" "app_access_d6_west_sg" {
+  provider    = aws.west
+  vpc_id      = aws_vpc.vpc_d6_west.id
   name        = "app_access_d6_west_sg"
   description = "ssh application traffic"
 
@@ -284,12 +292,13 @@ resource "aws_instance" "app_east_d6_server_2" {
 }
 
 # ###### West EC2 Instances ###### 
-resource "aws.west_instance" "app_west_d6_server_1" {
+resource "aws_instance" "app_west_d6_server_1" {
+  provider               = aws.west
   ami                    = var.ami
   instance_type          = var.instance_type
-  vpc_security_group_ids = [aws.west_security_group.app_access_d6_west_sg.id]
+  vpc_security_group_ids = [aws_security_group.app_access_d6_west_sg.id]
   key_name               = var.key_name
-  subnet_id              = aws.west_instance.public_west_a.id
+  subnet_id              = aws_instance.public_west_a.id
 
   user_data = file("app_server_setup.sh")
 
@@ -301,12 +310,13 @@ resource "aws.west_instance" "app_west_d6_server_1" {
 
 }
 
-resource "aws.west_instance" "app_west_d6_server_2" {
+resource "aws_instance" "app_west_d6_server_2" {
+  provider               = aws.west
   ami                    = var.ami
   instance_type          = var.instance_type
-  vpc_security_group_ids = [aws.west_security_group.app_access_d6_west_sg.id]
+  vpc_security_group_ids = [aws_security_group.app_access_d6_west_sg.id]
   key_name               = var.key_name
-  subnet_id              = aws.west_subnet.public_west_b.id
+  subnet_id              = aws_subnet.public_west_b.id
 
   user_data = file("app_server_setup.sh")
 
@@ -331,9 +341,9 @@ output "app_east_d6_server_2_public_ip" {
 }
 
 output "app_west_d6_server_1_public_ip" {
-  value = aws.west_instance.app_west_d6_server_1.public_ip
+  value = aws_instance.app_west_d6_server_1.public_ip
 }
 
 output "app_west_d6_server_2_public_ip" {
-  value = aws.west_instance.app_west_d6_server_2.public_ip
+  value = aws_instance.app_west_d6_server_2.public_ip
 }
