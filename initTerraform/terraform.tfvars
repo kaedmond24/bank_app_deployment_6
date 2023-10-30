@@ -1,5 +1,5 @@
-aws_access_key = "$aws_access_key"
-aws_secret_key = "$aws_secret_key"
+aws_access_key = "aws_access_key"
+aws_secret_key = "aws_secret_key"
 instance_type  = "t2.micro"
 key_name       = "pubEC2"
 ami            = "ami-08c40ec9ead489470"
