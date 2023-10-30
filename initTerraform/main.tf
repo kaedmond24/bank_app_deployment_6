@@ -125,7 +125,7 @@ resource "aws_route_table_association" "public_east_b" {
 # ###### West VPC Subnets ###### 
 resource "aws_subnet" "public_subnet_west_a" {
   provider                = aws.west
-  vpc_id                  = aws_vpc.vpc_d6_west
+  vpc_id                  = aws_vpc.vpc_d6_west.id
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "${var.region_west}a"
   map_public_ip_on_launch = true
@@ -298,7 +298,7 @@ resource "aws_instance" "app_west_d6_server_1" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.app_access_d6_west_sg.id]
   key_name               = var.key_name
-  subnet_id              = aws_instance.public_west_a.id
+  subnet_id              = aws_subnet.public_subnet_west_a.id
 
   user_data = file("app_server_setup.sh")
 
@@ -316,7 +316,7 @@ resource "aws_instance" "app_west_d6_server_2" {
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.app_access_d6_west_sg.id]
   key_name               = var.key_name
-  subnet_id              = aws_subnet.public_west_b.id
+  subnet_id              = aws_subnet.public_subnet_west_b.id
 
   user_data = file("app_server_setup.sh")
 
