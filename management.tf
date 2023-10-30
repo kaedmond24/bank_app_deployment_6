@@ -35,7 +35,7 @@ resource "aws_instance" "jenkins_iac_server" {
   subnet_id                   = var.default_subnet_id
   associate_public_ip_address = "true"
 
-  user_data = file("app_server_setup.sh")
+  user_data = file("jenkins_iac_server.sh")
   tags = {
     Name : "jenkins_iac_server",
     vpc : "deploy6",

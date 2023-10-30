@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Install Required Packages
+apt-get update
 apt-get install software-properties-common
 add-apt-repository -y ppa:deadsnakes/ppa
 apt-get install -y python3.7, python3.7-venv, python3.7-dev
