@@ -260,7 +260,7 @@ resource "aws_security_group" "app_access_d6_west_sg" {
 
 # ###### East EC2 Instances ###### 
 resource "aws_instance" "app_east_d6_server_1" {
-  ami                    = var.ami
+  ami                    = var.ami_east
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.app_access_d6_east_sg.id]
   key_name               = var.key_name
@@ -278,7 +278,7 @@ resource "aws_instance" "app_east_d6_server_1" {
 }
 
 resource "aws_instance" "app_east_d6_server_2" {
-  ami                    = var.ami
+  ami                    = var.ami_east
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.app_access_d6_east_sg.id]
   key_name               = var.key_name
@@ -296,7 +296,7 @@ resource "aws_instance" "app_east_d6_server_2" {
 # ###### West EC2 Instances ###### 
 resource "aws_instance" "app_west_d6_server_1" {
   provider               = aws.west
-  ami                    = var.ami
+  ami                    = var.ami_west
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.app_access_d6_west_sg.id]
   key_name               = var.key_name
@@ -314,7 +314,7 @@ resource "aws_instance" "app_west_d6_server_1" {
 
 resource "aws_instance" "app_west_d6_server_2" {
   provider               = aws.west
-  ami                    = var.ami
+  ami                    = var.ami_west
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.app_access_d6_west_sg.id]
   key_name               = var.key_name
