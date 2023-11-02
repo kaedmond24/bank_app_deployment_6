@@ -271,14 +271,15 @@ CI/CD Pipeline Architecture [Link](https://github.com/kaedmond24/bank_app_deploy
 
 # Issues
 
-Error: Error creating VPC: VpcLimitExceeded: The maximum number of VPCs has been reached<br>
-Solution: TBA<br>
+`Error`: Error creating VPC: VpcLimitExceeded: The maximum number of VPCs has been reached<br>
+
+`Solution`: The resolution for error started by reviewing my account VPC resources and determining which resources were no longer needed. I ran the `terraform destroy` command for some previous projects to free up some account resource allocation space.<br><br>
     ![app_service_ip](images/d6_deploy_error_1.png)<br>
 
-Solution: TBA
 
-Error: Creating EC2 Instance: InvalidKeyPair.NotFound: The key pair 'pubEC2' does not exist<br>
-Solution: TBA<br>
+`Error`: Creating EC2 Instance: InvalidKeyPair.NotFound: The key pair 'pubEC2' does not exist<br>
+
+`Solution`: I recived this error because I did not realize that an EC2 key pair was needed for the specific deployment region. Perhaps this oversight occurred because I primarily deploy resources in the US-East-1 region. To resolve this issue, I created a key pair of the same name, pubEC2, in the US-West-2 region. Then, I reattempted the `terraform apply` command to deploy the application infrastructure.<br><br>
     ![app_service_ip](images/d6_deploy_error_2.png)<br>
 
 
